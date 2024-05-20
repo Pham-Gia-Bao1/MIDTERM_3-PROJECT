@@ -24,6 +24,8 @@ const User = () => {
         const response = await axios.get(`https://api.github.com/users/${username}/repos`);
         const data = response.data;
         setRepos(data);
+        console.log(data)
+
       } catch (error) {
         console.error("Error fetching repos:", error.message);
       }
@@ -123,7 +125,7 @@ const User = () => {
         <div className="badge badge-light">Repository: {public_repos}</div>
         <div className="badge badge-dark">Gist: {public_gists}</div>
       </div>
-      {/* <Repos repos={repos} /> */}
+      <Repos repos={repos} />
     </Fragment>
   );
 };
