@@ -21,13 +21,12 @@ const User = () => {
 
   const getUserRepos = async (username) => {
     try {
-      const response = await axios.get(`https://api.github.com/users/${username}/repos`);
-      const data = response.data;
-      console.log("Repos data:", data);
-      setRepos(data);
-    } catch (error) {
-      console.error("Error fetching repos:", error.message);
-    }
+        const response = await axios.get(`https://api.github.com/users/${username}/repos`);
+        const data = response.data;
+        setRepos(data);
+      } catch (error) {
+        console.error("Error fetching repos:", error.message);
+      }
   };
 
   useEffect(() => {
