@@ -7,7 +7,7 @@ const Navbar = () => {
   const { theme, toggleTheme } = useContext(ThemeContext);
 
   return (
-    <nav className={`navbar ${theme === 'light' ? 'bg-success' : 'bg-dark'}`}>
+    <nav className='bg-success navbar'>
       <h1>
         <i className="fab fa-github" /> GitHub Finder
       </h1>
@@ -19,7 +19,7 @@ const Navbar = () => {
           <Link to="/about">About</Link>
         </li>
       </ul>
-      <button onClick={toggleTheme}>
+      <button className="btn" onClick={toggleTheme}>
         {theme === 'light' ? 'Dark Theme' : 'Light Theme'}
       </button>
     </nav>
