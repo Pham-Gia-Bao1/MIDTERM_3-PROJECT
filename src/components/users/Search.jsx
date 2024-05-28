@@ -1,37 +1,50 @@
 // Search.js
-import axios from "axios";
-import React, { useState } from "react";
-import Users from "./Users";
+import React, { useState, useEffect, useRef } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
+import Users from './Users';
+import { searchUsers } from '../../api';
+
 const Search = () => {
-  const [text, setText] = useState("");
+  const history = useHistory();
+  const location = useLocation();
+  const [text, setText] = useState('');
   const [users, setUsers] = useState([]);
-  const searchUsers = async (text) => {
-    try {
-      const response = await axios.get(
-        `https://api.github.com/search/users?q=${text} `
-      );
-      setUsers(response.data.items);
-    } catch (error) {
-      console.error("Error fetching data:", error);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const query = params.get('q');
+    if (query) {
+      setText(query);
+      searchUsers(query).then((result) => setUsers(result));
     }
-  };
-  const onSubmit = (e) => {
+  }, [location.search]);
+
+  const onSubmit = async (e) => {
     e.preventDefault();
-    if (text === "") {
-      alert("Please enter something");
+    if (text === '') {
+      alert('Please enter something');
     } else {
-      searchUsers(text);
-      setText("");
+      history.push(`?q=${text}`);
+      const fetchedUsers = await searchUsers(text);
+      setUsers(fetchedUsers);
     }
   };
+
   const clearUsers = () => {
     setUsers([]);
+    setText(''); // Clear the input field
+    history.push('');
+    inputRef.current.focus(); // Focus on the input field
   };
+
   const onChange = (e) => setText(e.target.value);
+
   return (
     <div>
       <form onSubmit={onSubmit} className="form">
         <input
+          ref={inputRef}
           type="text"
           name="text"
           placeholder="Search User"
@@ -53,4 +66,5 @@ const Search = () => {
     </div>
   );
 };
+
 export default Search;
