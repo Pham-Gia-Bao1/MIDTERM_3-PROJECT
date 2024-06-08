@@ -1,44 +1,46 @@
-// Search.js
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import Users from './Users';
 import { searchUsers } from '../../api';
+import { SearchContext } from './SearchContext';
 
 const Search = () => {
   const history = useHistory();
   const location = useLocation();
-  const [text, setText] = useState('');
+  const { query, setQuery } = useContext(SearchContext);
   const [users, setUsers] = useState([]);
   const inputRef = useRef(null);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const query = params.get('q');
-    if (query) {
-      setText(query);
-      searchUsers(query).then((result) => setUsers(result));
+    const queryParam = params.get('q');
+    if (queryParam) {
+      setQuery(queryParam);
+      searchUsers(queryParam).then((result) => setUsers(result));
+    } else {
+      setUsers([]);
     }
-  }, [location.search]);
+  }, [location.search, setQuery]);
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (text === '') {
+    if (query === '') {
       alert('Please enter something');
     } else {
-      history.push(`?q=${text}`);
-      const fetchedUsers = await searchUsers(text);
+      history.push(`/?q=${query}`);
+      const fetchedUsers = await searchUsers(query);
       setUsers(fetchedUsers);
     }
   };
 
   const clearUsers = () => {
     setUsers([]);
-    setText(''); // Clear the input field
-    history.push('');
+    setQuery(''); // Clear the input field
+    history.push('/');
     inputRef.current.focus(); // Focus on the input field
   };
 
-  const onChange = (e) => setText(e.target.value);
+  const onChange = (e) => setQuery(e.target.value);
 
   return (
     <div>
@@ -48,7 +50,7 @@ const Search = () => {
           type="text"
           name="text"
           placeholder="Search User"
-          value={text}
+          value={query}
           onChange={onChange}
         />
         <input

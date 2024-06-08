@@ -1,13 +1,14 @@
-// User.js
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState, useContext } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import Repos from '../repos/Repos';
-import { getUser, getUserRepos } from '../../api'; // Import các hàm từ api.js
+import { getUser, getUserRepos } from '../../api';
+import { SearchContext } from './SearchContext';
 
 const User = () => {
   const { id } = useParams();
   const [user, setUser] = useState({});
   const [repos, setRepos] = useState([]);
+  const { query } = useContext(SearchContext);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,7 +28,7 @@ const User = () => {
   const {
     name,
     avatar_url,
-    location,
+    location: userLocation,
     bio,
     company,
     blog,
@@ -42,7 +43,7 @@ const User = () => {
 
   return (
     <Fragment>
-      <Link to="/" className="btn btn-light">
+      <Link to={`/?q=${query}`} className="btn btn-light">
         Back to Search
       </Link>
       Hireable:{" "}
@@ -60,7 +61,7 @@ const User = () => {
             style={{ width: "150px" }}
           />
           <h1>{name}</h1>
-          <p>{location}</p>
+          <p>{userLocation}</p>
         </div>
         <div>
           {bio && (
